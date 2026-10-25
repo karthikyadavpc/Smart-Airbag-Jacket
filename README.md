@@ -151,34 +151,28 @@ The firmware documentation must explain:
 
 Begin electronic verification with the physical deployment mechanism
 disconnected and use an indicator or dummy load.
+| Parameter | Measured | Target | Status |
+|---|---|---|---|
+| Fall detection accuracy | 93% | ≥ 90% | ✅ Passed |
+| Airbag inflation time | 0.4 s | ≤ 0.5 s | ✅ Passed |
+| Heartbeat accuracy | ±3 BPM | ±5 BPM | ✅ Passed |
+| Temperature accuracy | ±0.3 °C | ±0.5 °C | ✅ Passed |
+| Alert delay | 2–4 s | ≤ 5 s | ✅ Passed |
+| Battery backup | 8 hours | ≥ 6 hours | ✅ Passed |
 
-Performance Evaluation
-|Parameter|	|Measured|	|Target|	|Status|
-|Fall detection accuracy|	|93%|	|≥ 90%|	|✅ Passed|
-|Airbag inflation time|	|0.4 s|	|≤ 0.5 s|	|✅ Passed|
-|Heartbeat accuracy|	|±3 BPM|	|±5 BPM|	|✅ Passed|
-|Temperature accuracy|	|±0.3 °C|	|±0.5 °C|	|✅ Passed|
-|Alert delay|	|2–4 s|	|≤ 5 s|	|✅ Passed|
-|Battery backup|	|8 hours|	|≥ 6 hours|	|✅ Passed|
-
-
-## Results
-
-Add measured results with the test conditions:
-
-| Metric | Measurement |
 All measured results met the predefined design targets.
 
-Test methodology
-|Parameter|How it was measured|
-Fall detection accuracy	[X correct detections out of Y fall and non-fall trials]
-Airbag inflation time	[timing method, e.g. video frame count or oscilloscope from trigger to full inflation]
-Heartbeat accuracy	[reference device used for comparison]
-Temperature accuracy	[reference thermometer used]
-Alert delay	[detection to message received, averaged over N tests]
-Battery backup	[battery capacity and load conditions]
-Electronic response time, inflation time and SMS delivery time are
-separate measurements.
+### Test methodology
+| Parameter | How it was measured |
+|---|---|
+| Fall detection accuracy | [X correct detections out of Y fall and non-fall trials] |
+| Airbag inflation time | [timing method, e.g. video frame count or oscilloscope from trigger to full inflation] |
+| Heartbeat accuracy | [reference device used for comparison] |
+| Temperature accuracy | [reference thermometer used] |
+| Alert delay | [detection to message received, averaged over N tests] |
+| Battery backup | [battery capacity and load conditions] |
+
+
 
 ## Limitations
 
