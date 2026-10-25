@@ -98,9 +98,7 @@ The modem must already be powered on, have its UART configured to 9600 baud, and
 | `reports/` | Technical report, software log and hardware result template |
 | `.github/workflows/ci.yml` | Native test and ESP32 build jobs |
 
-## Photographs and results
 
-Real prototype photographs were not provided. Add your own following `photographs/README.md`. Do not describe the garment illustration as a photograph or a measured prototype. Hardware result fields intentionally remain `NOT MEASURED`.
 
 ## Authorship and attribution
 
