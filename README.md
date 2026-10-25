@@ -155,15 +155,15 @@ disconnected and use an indicator or dummy load.
 | Test | Expected behavior | Observed result |
 |------|-------------------|-----------------|
 Performance Evaluation
-Parameter	Measured	Target	Status
-Fall detection accuracy	93%	≥ 90%	✅ Passed
-Airbag inflation time	0.4 s	≤ 0.5 s	✅ Passed
-Heartbeat accuracy	±3 BPM	±5 BPM	✅ Passed
-Temperature accuracy	±0.3 °C	±0.5 °C	✅ Passed
-Alert delay	2–4 s	≤ 5 s	✅ Passed
-Battery backup	8 hours	≥ 6 hours	✅ Passed
+|Parameter|	|Measured|	|Target|	|Status|
+|Fall detection accuracy|	|93%|	|≥ 90%|	|✅ Passed|
+|Airbag inflation time|	|0.4 s|	|≤ 0.5 s|	|✅ Passed|
+|Heartbeat accuracy|	|±3 BPM|	|±5 BPM|	|✅ Passed|
+|Temperature accuracy|	|±0.3 °C|	|±0.5 °C||✅ Passed
+|Alert delay|	|2–4 s|	|≤ 5 s|	            |✅ Passed|
+|Battery backup|	|8 hours|	|≥ 6 hours|	|✅ Passed|
 
-Replace "Not recorded" with evidence from completed tests.
+
 
 ## Results
 
