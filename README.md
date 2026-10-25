@@ -1,206 +1,109 @@
 # Smart Airbag Jacket
+### ESP32 motion sensing, GPS location and GSM notification - LED bench reference
 
-An ESP32-based wearable safety research prototype that monitors motion,
-detects potential impact events and supports emergency notification
-through GSM and GPS modules.
+![Architecture](images/system_architecture.png)
 
-## Project Status
+**Status:** New reference implementation prepared for Karthik's portfolio. Host software tests are included. Physical hardware, SMS delivery and protective performance have not been verified in this package. This is not a recovered copy of the original BE project firmware.
 
-Academic prototype.
+The original project description in Karthik's resume names an ESP32, MPU6050, SIM800L, NEO-6M and a CO2 airbag mechanism. This repository provides a reproducible **electronic bench demonstration** around those sensor and communication modules. It has **no inflation driver, valve-control output or mechanical deployment instructions**. GPIO25 is an LED indicator only.
 
-This repository documents the project architecture, hardware,
-firmware and available test evidence. It is not certified protective
-equipment and must not be relied on for personal safety.
+## Features implemented
 
-## Overview
+- MPU6050 register-level I2C acquisition: +/-8 g, +/-500 degrees/second; target polling interval 10 ms.
+- Startup stationary gyro-bias calibration and explicit manual arming.
+- Illustrative combined acceleration/rotation threshold with persistence, gap rejection and event latch.
+- Checksum-validated GPRMC/GNRMC parsing and GPS fix-age checking.
+- Optional nonblocking SMS state machine: SIM/network checks, prompt gating, timeouts and modem submission acknowledgement.
+- SMS disabled by default; dry-run messages printed on USB serial.
+- Native C++ tests, synthetic CSV replay, diagrams and a technical report.
 
-The Smart Airbag Jacket combines motion sensing, embedded processing
-and emergency communication in a wearable system.
+## Start here
 
-An MPU6050 measures acceleration and angular velocity. An ESP32
-processes the sensor data using a threshold-based detection algorithm.
-When a potential impact event is detected, the controller can issue
-a deployment request and initiate an emergency SMS containing the
-available GPS coordinates.
+1. Read `docs/GETTING_STARTED.md`.
+2. Connect **only ESP32 + MPU6050 + resistor + LED** for the initial bench test.
+3. Open this folder (the one containing `platformio.ini`) in VS Code with PlatformIO.
+4. Build and upload; open serial monitor at **115200**.
+5. Keep the sensor stationary during startup calibration.
+6. Type `s` for status, `t` for a manual LED demonstration, `r` to reset/disarm.
+7. Type `a` only when ready for an LED-only sensor bench test. Do not strike or drop a person or the assembly to create an event; use synthetic replay for detector testing.
 
-The physical prototype includes a CO2-based airbag deployment mechanism.
-Its mechanical design and measured performance must be documented
-separately from the electronic detection system.
+`a` arms only after successful calibration. `t` is a manual demonstration and works even without the IMU; it is not proof of sensor detection. After an I2C fault, fix the connection and reboot. Reset does not recalibrate. Never connect GPIO25 to an inflation mechanism.
 
-## Objectives
+## Build and upload
 
-- Monitor motion using an accelerometer and gyroscope.
-- Detect potential impact events using embedded firmware.
-- Interface the controller with an airbag deployment subsystem.
-- Retrieve location information through GPS.
-- Send an emergency SMS through a GSM module.
-- Evaluate detection behavior, communication and response timing.
-
-## Hardware
-
-| Component | Purpose |
-|-----------|---------|
-| ESP32 | Main controller and sensor-data processing |
-| MPU6050 | Three-axis acceleration and angular-velocity measurement |
-| SIM800L | GSM communication and SMS transmission |
-| NEO-6M | GPS position data |
-| Deployment interface | Connects the controller to the deployment subsystem |
-| CO2-based inflation assembly | Physical airbag inflation mechanism |
-| Power supply | Supplies the controller, sensors and communication modules |
-| Jacket and airbag assembly | Wearable mechanical structure |
-
-Exact board variants, power specifications and deployment-interface
-components: [add verified details].
-
-## Software and Tools
-
-- Firmware language: Embedded C/C++ [confirm]
-- Development environment: [add actual IDE and framework]
-- Simulation: Proteus [describe what was simulated]
-- Version control: Git and GitHub
-- Additional tools: [add only tools actually used]
-
-## System Architecture
-
-```mermaid
-flowchart TD
-    A["MPU6050 motion sensor"] --> B["ESP32 controller"]
-    B --> C["Impact detection logic"]
-    C --> D["Deployment interface"]
-    D --> E["Airbag assembly"]
-    C --> F["Emergency notification"]
-    G["NEO-6M GPS"] --> F
-    F --> H["SIM800L GSM"]
-    H --> I["Emergency contact"]
+```bash
+python -m pip install platformio==6.1.18
+pio run
+pio run --target upload
+pio device monitor --baud 115200
 ```
 
-The diagram represents functional relationships.
-It is not an electrical wiring diagram.
+PlatformIO downloads the pinned ESP32 platform on the first build. Confirm your board is a classic ESP32 DevKit-compatible board; the supplied pin map is not for ESP32-C3/S3 or boards with PSRAM on GPIO16/17.
 
-## Communication Interfaces
+## Run software checks without hardware
 
-| Connection | Interface |
-|------------|-----------|
-| MPU6050 to ESP32 | I2C |
-| NEO-6M to ESP32 | UART |
-| SIM800L to ESP32 | UART |
-| ESP32 to deployment interface | Implementation-specific control output |
+Requires Python 3 and a C++17 compiler named `g++` in PATH.
 
-GPIO assignments, baud rates and supply connections are documented
-in `hardware/pin_connections.md`.
+```bash
+python tests/run_tests.py
+```
 
-## Working Principle
+The included run records **36 native checks passed** and one event at **230 ms in synthetic data**. This is an algorithm-fixture timestamp, not measured crash-detection latency. Both ESP32 build environments (SMS off/on) also compiled successfully. See `reports/software_test_log.txt`, `reports/esp32_build_log.txt` and `reports/VALIDATION.md` for verification scope.
 
-1. Initialize the controller and connected modules.
-2. Check sensor communication and perform calibration.
-3. Read acceleration and angular-velocity measurements.
-4. Process the readings using the implemented detection algorithm.
-5. Identify whether the configured event conditions are satisfied.
-6. Record the event and issue the appropriate control request.
-7. Retrieve the available GPS position.
-8. Attempt to send an emergency SMS.
-9. Record communication outcomes and system faults.
+## Bench connections
 
-Actual ordering, fault handling and timing must match the firmware.
-
-## Detection Algorithm
-
-The prototype uses threshold-based impact detection.
-
-Document the following from the actual implementation:
-
-- Sensor sampling frequency: [100 Hz]
-- Accelerometer measurement range: [±8 g]
-- Gyroscope measurement range: [±500 °/s]
-- Calibration method: [Gyro bias from 200 samples (about 2 s) at rest, rejected if the board moves or acceleration is outside 0.8 to 1.2 g]
-- Filtering method, if used: [MPU6050 low-pass filter, setting 3 (about 44 Hz accelerometer / 42 Hz gyro bandwidth)]
-- Event-latching and reset behavior: [Event latches and drives GPIO25 high. Reset with r, re-arm with a. A sensor fault disables detection until reboot.]
-
-Do not treat arbitrary example thresholds as validated crash criteria.
-
-## Firmware
-
-Firmware source code is stored in `firmware/`.
-
-The firmware documentation must explain:
-
-- Controller initialization
-- Sensor configuration and calibration
-- Motion-data acquisition
-- Detection logic
-- Deployment-interface behavior
-- GPS data parsing
-- GSM SMS handling
-- Fault handling and event logging
-
-## Setup and Reproduction
-
-1. Identify the exact ESP32 board and hardware revisions.
-2. Review the schematic and verified pin connections.
-3. Install the development environment listed below.
-4. Install the required libraries at the recorded versions.
-5. Configure local settings using the supplied example configuration.
-6. Build and upload the firmware using the documented board settings.
-7. Run the sensor and communication checks.
-8. Perform detection tests using a harmless indicator or dummy load.
-
-
-## Testing
-
-Begin electronic verification with the physical deployment mechanism
-disconnected and use an indicator or dummy load.
-| Parameter | Measured | Target | Status |
-|---|---|---|---|
-| Fall detection accuracy | 93% | ≥ 90% | ✅ Passed |
-| Airbag inflation time | 0.4 s | ≤ 0.5 s | ✅ Passed |
-| Heartbeat accuracy | ±3 BPM | ±5 BPM | ✅ Passed |
-| Temperature accuracy | ±0.3 °C | ±0.5 °C | ✅ Passed |
-| Alert delay | 2–4 s | ≤ 5 s | ✅ Passed |
-| Battery backup | 8 hours | ≥ 6 hours | ✅ Passed |
-
-All measured results met the predefined design targets.
-
-### Test methodology
-| Parameter | How it was measured |
+| ESP32 pin | Bench connection |
 |---|---|
-| Fall detection accuracy | [X correct detections out of Y fall and non-fall trials] |
-| Airbag inflation time | [timing method, e.g. video frame count or oscilloscope from trigger to full inflation] |
-| Heartbeat accuracy | [reference device used for comparison] |
-| Temperature accuracy | [reference thermometer used] |
-| Alert delay | [detection to message received, averaged over N tests] |
-| Battery backup | [battery capacity and load conditions] |
+| 3V3 | MPU6050 breakout VCC, only if that exact breakout supports 3.3 V |
+| GND | MPU6050 GND and LED cathode |
+| GPIO21 | MPU6050 SDA |
+| GPIO22 | MPU6050 SCL |
+| GPIO25 | 330-ohm resistor -> LED anode |
+| GPIO16 RX | Optional GPS TX (3.3 V compatible logic) |
+| GPIO17 TX | Optional GPS RX, normally unnecessary |
+| GPIO26 RX | Optional GSM TX through appropriate voltage translation |
+| GPIO27 TX | Optional GSM RX through appropriate voltage translation |
 
+See `hardware/WIRING.md` before adding optional modules. GSM requires a separate correctly specified power supply and level compatibility review. Do not power a SIM800L from ESP32 3V3. Module variants differ; a universal ready-to-fabricate schematic is not supplied.
 
+## Detection rule
 
-## Limitations
+`A = sqrt(ax^2 + ay^2 + az^2)` in g, including gravity.
 
-- Threshold-based detection can produce false triggers or miss events.
-- GPS reception depends on the environment.
-- GSM communication depends on network and SIM availability.
-- Power interruptions can affect sensing and communication.
-- Electronic detection alone does not establish protective performance.
-- Controlled prototype tests do not establish real-world crash safety.
+`G = sqrt(gx^2 + gy^2 + gz^2)` in degrees/second, after startup gyro-bias subtraction.
 
+An event occurs only if `A >= 3.0 g` **and** `G >= 180 dps` persist for at least 30 ms, with no observed sample gap above 30 ms. These are arbitrary demonstrator settings, **not validated crash criteria**. No orientation estimation, Kalman filter, machine learning or RTOS tasks are implemented. The firmware is a cooperative Arduino loop.
 
+## Optional GPS / SMS
 
+GPS parsing runs whenever bytes arrive. Fixes older than 10 seconds are not placed in messages. A checksum-valid RMC sentence with void status invalidates the fix.
 
-Examples to adapt only if completed:
+For SMS, copy `include/local_config.example.h` to `include/local_config.h`, enter a consenting test recipient in international format, set `ENABLE_SMS` to `1`, rebuild and upload. Keep that local file private. Every message starts `BENCH TEST`.
 
-- Integrated the motion sensor with the ESP32.
-- Implemented threshold-based detection firmware.
-- Integrated GPS parsing and GSM SMS communication.
-- Designed or assembled the electronic prototype.
-- Conducted tests and documented observations.
+The modem must already be powered on, have its UART configured to 9600 baud, and use a working SIM with supported 2G service. Firmware does not operate PWRKEY. It makes one attempt per latched event with no automatic retry. A `+CMGS` response plus `OK` indicates modem submission, not recipient delivery. Network coverage and SMS charges depend on your provider.
 
-## Future Improvements
+## Repository contents
 
-- Evaluate detection using labeled motion datasets.
-- Improve false-trigger rejection.
-- Add structured event logging.
-- Improve sensor and communication fault diagnostics.
-- Investigate power consumption and battery monitoring.
-- Evaluate mechanical and wearable-system performance through
-  appropriate professional testing.
+| Path | Purpose |
+|---|---|
+| `src/main.cpp` | ESP32 application and MPU6050 register driver |
+| `include/` | Pins and example configuration |
+| `lib/BenchCore/` | Portable detector, GPS parser and SMS state machine |
+| `tests/` | Host checks and CSV replay |
+| `data/` | Clearly labeled synthetic motion fixture |
+| `hardware/` | Wiring, bill of materials and integration boundaries |
+| `images/` | Editable SVG + PNG diagrams; not photographs |
+| `photographs/README.md` | Required real-photo shot list; no fabricated photos |
+| `docs/` | Setup, algorithm, GitHub publishing and interview guide |
+| `reports/` | Technical report, software log and hardware result template |
+| `.github/workflows/ci.yml` | Native test and ESP32 build jobs |
 
+## Photographs and results
 
+Real prototype photographs were not provided. Add your own following `photographs/README.md`. Do not describe the garment illustration as a photograph or a measured prototype. Hardware result fields intentionally remain `NOT MEASURED`.
 
+## Authorship and attribution
+
+Prepared for **Karthik Yadav P C**. This is newly generated reference code and documentation; Karthik's original BE implementation and team contributions must be documented separately. Review, understand and validate the code before presenting it as your work. Do not claim unperformed tests, independent authorship of team work, or measured protective performance.
+
+No open-source license is selected automatically. See `LICENSE-NOTE.md`. References are listed in `docs/REFERENCES.md`.

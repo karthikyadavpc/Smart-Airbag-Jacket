@@ -1,0 +1,10 @@
+SMART AIRBAG JACKET - PORTFOLIO REFERENCE PACKAGE
+
+1. Open README.md.
+2. Read docs/GETTING_STARTED.md for build/run steps.
+3. For upload steps read docs/GITHUB_UPLOAD.md.
+4. The PDF technical report is in reports/.
+5. images/ contains diagrams and illustrations, NOT real photographs.
+6. photographs/README.md explains which real photos you must add.
+7. Firmware is an LED bench reference, not the original recovered BE code.
+8. Hardware tests, physical inflation and SMS receipt have NOT been verified.
