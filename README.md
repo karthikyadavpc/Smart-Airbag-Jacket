@@ -109,14 +109,12 @@ The prototype uses threshold-based impact detection.
 
 Document the following from the actual implementation:
 
-- Sensor sampling frequency: [value]
-- Accelerometer measurement range: [value]
-- Gyroscope measurement range: [value]
-- Calibration method: [method]
-- Filtering method, if used: [method]
-- Detection thresholds and units: [values]
-- Time-window or persistence checks: [details]
-- Event-latching and reset behavior: [details]
+- Sensor sampling frequency: [100 Hz]
+- Accelerometer measurement range: [±8 g]
+- Gyroscope measurement range: [±500 °/s]
+- Calibration method: [Gyro bias from 200 samples (about 2 s) at rest, rejected if the board moves or acceleration is outside 0.8 to 1.2 g]
+- Filtering method, if used: [MPU6050 low-pass filter, setting 3 (about 44 Hz accelerometer / 42 Hz gyro bandwidth)]
+- Event-latching and reset behavior: [Event latches and drives GPIO25 high. Reset with r, re-arm with a. A sensor fault disables detection until reboot.]
 
 Do not treat arbitrary example thresholds as validated crash criteria.
 
