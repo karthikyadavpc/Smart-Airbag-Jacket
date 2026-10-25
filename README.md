@@ -205,11 +205,8 @@ separate measurements.
 - Electronic detection alone does not establish protective performance.
 - Controlled prototype tests do not establish real-world crash safety.
 
-## My Contributions
 
-Author: Karthik Yadav P C
 
-[Describe only your actual work, including your role within the team.]
 
 Examples to adapt only if completed:
 
@@ -229,17 +226,5 @@ Examples to adapt only if completed:
 - Evaluate mechanical and wearable-system performance through
   appropriate professional testing.
 
-## Project Media
 
-Add original photographs, annotated diagrams and demonstration videos.
 
-## References and Attribution
-
-List datasheets, libraries, tutorials and any reused code.
-Preserve the licenses and copyright notices of third-party material.
-
-## License
-
-[Choose a license only for material you have the right to license.
-Obtain agreement from project collaborators before publishing
-shared code, reports or designs.]
